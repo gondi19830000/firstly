@@ -9,10 +9,9 @@ import com.shangliwei.firstly.constant.DBConstant;
 
 public class DBUtil {
 
-	public static Connection getConnection(boolean autoCommit) throws Exception {
+	public static Connection getConnection() throws Exception {
 		Class.forName(DBConstant.DB_ORACLE_DRIVER);
 		Connection connection = DriverManager.getConnection(DBConstant.DB_URL, DBConstant.DB_USER, DBConstant.DB_PASSWORD);
-		connection.setAutoCommit(autoCommit);
 		return connection;
 	}
 	

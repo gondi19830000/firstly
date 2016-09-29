@@ -6,7 +6,7 @@ public class DBUtilTest {
 
 	@Test
 	public void testGetConnection() throws Exception {
-		System.out.println(DBUtil.getConnection(true));
+		System.out.println(DBUtil.getConnection());
 	}
 
 }

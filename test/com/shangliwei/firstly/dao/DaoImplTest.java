@@ -23,7 +23,7 @@ public class DaoImplTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		connection = DBUtil.getConnection(true);
+		connection = DBUtil.getConnection();
 		dao = new DaoImpl();
 	}
 
