@@ -1,16 +1,14 @@
 package com.shangliwei.firstly.dao;
 
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.shangliwei.firstly.constant.ModellConstant;
+import com.shangliwei.firstly.constant.ModelConstant;
 import com.shangliwei.firstly.dao.impl.DaoImpl;
 import com.shangliwei.firstly.util.DBUtil;
 import com.shangliwei.firstly.util.DateTimeUtil;
@@ -45,65 +43,34 @@ public class DaoImplTest {
 		employee.put("state", "01");
 		employee.put("creater", "admin");
 		employee.put("creattime", DateTimeUtil.getTimestamp());
-		dao.add(employee, ModellConstant.EMPLOYEE, connection);
+		dao.add(employee, ModelConstant.EMPLOYEE, connection);
 	}
 
 	@Test
 	public void testUpdate() throws Exception {
-		List<String> fields = new ArrayList<>();
-		fields.add("id");
-		fields.add("sequence");
-		fields.add("username");
-		fields.add("password");
-		fields.add("department_id");
-		fields.add("phone");
-		fields.add("email");
-		fields.add("state");
-		fields.add("creater");
-		fields.add("creattime");
-		fields.add("editer");
-		fields.add("edittime");
-		Map<String, Object> employee = dao.query("a6da59e49fc243f4b3009ba899e8280d", fields, ModellConstant.EMPLOYEE, connection);
+		String[] fields = new String[] {"id","sequence","username","password","department_id","phone","email","state","creater","creattime","editer","edittime"};
+		Map<String, Object> employee = dao.query("a6da59e49fc243f4b3009ba899e8280d", fields, ModelConstant.EMPLOYEE, connection);
 		employee.put("state", "02");
 		employee.put("editer", "admin");
 		employee.put("edittime", DateTimeUtil.getTimestamp());
-		dao.update(employee, ModellConstant.EMPLOYEE, connection);
+		dao.update(employee, ModelConstant.EMPLOYEE, connection);
 	}
 
 	@Test
 	public void testDelete() throws Exception {
-		dao.delete("ce1943b6d9e54bf182cf5d5e58b92ea4", ModellConstant.EMPLOYEE, connection);
+		dao.delete("ce1943b6d9e54bf182cf5d5e58b92ea4", ModelConstant.EMPLOYEE, connection);
 	}
 
 	@Test
 	public void testQueryStringListOfStringStringConnection() throws Exception {
-		List<String> fields = new ArrayList<>();
-		fields.add("id");
-		fields.add("sequence");
-		fields.add("username");
-		fields.add("password");
-		fields.add("department_id");
-		fields.add("phone");
-		fields.add("email");
-		fields.add("state");
-		fields.add("creater");
-		fields.add("creattime");
-		fields.add("editer");
-		fields.add("edittime");
-		System.out.println(dao.query("a6da59e49fc243f4b3009ba899e8280d", fields, ModellConstant.EMPLOYEE, connection));
+		String[] fields = new String[] {"id","sequence","username","department_id","phone","email","state"};
+		System.out.println(dao.query("a6da59e49fc243f4b3009ba899e8280d", fields, ModelConstant.EMPLOYEE, connection));
 	}
 
 	@Test
 	public void testQueryMapOfStringObjectMapOfStringIntegerListOfStringStringConnection() throws Exception {
-		List<String> fields = new ArrayList<>();
-		fields.add("id");
-		fields.add("sequence");
-		fields.add("username");
-		fields.add("department_id");
-		fields.add("phone");
-		fields.add("email");
-		fields.add("state");
-		System.out.println(dao.query(null, null, fields, ModellConstant.EMPLOYEE, connection));
+		String[] fields = new String[] {"id","sequence","username","department_id"};
+		System.out.println(dao.query(null, null, fields, ModelConstant.EMPLOYEE, connection));
 	}
 
 }

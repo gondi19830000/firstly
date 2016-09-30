@@ -71,13 +71,13 @@ public class DaoImpl extends JDBCTemplate implements IDao {
 	}
 
 	@Override
-	public Map<String, Object> query(String id, List<String> fields, String model, Connection connection) throws Exception {
+	public Map<String, Object> query(String id, String[] fields, String model, Connection connection) throws Exception {
 		Map<String, Object> entitiy = null;
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT ");
-		for (int i=0; i<fields.size(); i++) {
-			sql.append(fields.get(i).toUpperCase());
-			if (i < fields.size()-1) {
+		for (int i=0; i<fields.length; i++) {
+			sql.append(fields[i].toUpperCase());
+			if (i < fields.length-1) {
 				sql.append(",");
 			} else {
 				sql.append(" ");
@@ -92,14 +92,14 @@ public class DaoImpl extends JDBCTemplate implements IDao {
 	}
 
 	@Override
-	public List<Map<String, Object>> query(Map<String, Object> condition, Map<String, Integer> pagination, List<String> fields, String model, Connection connection) throws Exception {
+	public List<Map<String, Object>> query(Map<String, Object> condition, Map<String, Integer> pagination, String[] fields, String model, Connection connection) throws Exception {
 		List<Map<String, Object>> entitiyList = null;
 		StringBuffer sql = new StringBuffer();
 		List<Object> parameters = new ArrayList<>();
 		sql.append("SELECT ");
-		for (int i=0; i<fields.size(); i++) {
-			sql.append(fields.get(i));
-			if (i < fields.size()-1) {
+		for (int i=0; i<fields.length; i++) {
+			sql.append(fields[i]);
+			if (i < fields.length-1) {
 				sql.append(",");
 			} else {
 				sql.append(" ");

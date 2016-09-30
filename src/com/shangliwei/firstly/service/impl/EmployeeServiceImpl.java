@@ -1,15 +1,14 @@
-package com.shangliwei.firstly.service;
+package com.shangliwei.firstly.service.impl;
 
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.shangliwei.firstly.constant.ModellConstant;
+import com.shangliwei.firstly.constant.ModelConstant;
 import com.shangliwei.firstly.dao.IDao;
 import com.shangliwei.firstly.dao.impl.DaoImpl;
-import com.shangliwei.firstly.util.CacheUtil;
+import com.shangliwei.firstly.service.IEmployeeService;
 import com.shangliwei.firstly.util.DBUtil;
 import com.shangliwei.firstly.util.DateTimeUtil;
 import com.shangliwei.firstly.util.SequenceUtil;
@@ -25,15 +24,16 @@ public class EmployeeServiceImpl implements IEmployeeService {
 			connection = DBUtil.getConnection();
 			Map<String, Object> employee = new HashMap<>();
 			employee.put("id", SequenceUtil.getUUID());
+			employee.put("sequence", this.getMaxSequence(connection));
 			employee.put("username", form.get("username"));
 			employee.put("password", form.get("password"));
 			employee.put("department_id", form.get("department_id"));
 			employee.put("phone", form.get("phone"));
 			employee.put("email", form.get("email"));
-			employee.put("state", form.get("state"));
+			employee.put("state", "01");
 			employee.put("creater", currentUserId);
 			employee.put("creattime", DateTimeUtil.getTimestamp());
-			dao.add(employee, ModellConstant.EMPLOYEE, connection);
+			dao.add(employee, ModelConstant.EMPLOYEE, connection);
 		} finally {
 			DBUtil.release(connection);
 		}
@@ -53,7 +53,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
 			employee.put("state", form.get("state"));
 			employee.put("editer", currentUserId);
 			employee.put("edittime", DateTimeUtil.getTimestamp());
-			dao.update(employee, ModellConstant.EMPLOYEE, connection);
+			dao.update(employee, ModelConstant.EMPLOYEE, connection);
 		} finally {
 			DBUtil.release(connection);
 		}
@@ -63,7 +63,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
 	public void delete(String id, String currentUserId) throws Exception {
 		try {
 			connection = DBUtil.getConnection();
-			dao.delete(id, ModellConstant.EMPLOYEE, connection);
+			dao.delete(id, ModelConstant.EMPLOYEE, connection);
 		} finally {
 			DBUtil.release(connection);
 		}
@@ -75,22 +75,8 @@ public class EmployeeServiceImpl implements IEmployeeService {
 		Map<String, Object> employee = null;
 		try {
 			connection = DBUtil.getConnection();
-			List<String> fields = new ArrayList<>();
-			fields.add("id");
-			fields.add("sequence");
-			fields.add("username");
-			fields.add("password");
-			fields.add("department_id");
-			fields.add("phone");
-			fields.add("email");
-			fields.add("creater");
-			fields.add("creattime");
-			fields.add("editer");
-			fields.add("edittime");
-			employee = dao.query(id, fields, ModellConstant.EMPLOYEE, connection);
-			if (employee != null) {
-				CacheUtil.addUsername(employee, connection, new String[] {"creater", "editer"});
-			}
+			String[] fields = new String[] {"id","sequence","username","password","department_id","phone","email","state","creater","creattime","editer","edittime"};
+			employee = dao.query(id, fields, ModelConstant.EMPLOYEE, connection);
 		} finally {
 			DBUtil.release(connection);
 		}
@@ -98,15 +84,43 @@ public class EmployeeServiceImpl implements IEmployeeService {
 	}
 
 	@Override
-	public List<Map<String, Object>> queryList(Map<String, Object> condition, Map<String, Integer> pagination) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Map<String, Object>> queryList(Map<String, Object> condition, Map<String, Integer> pagination) throws Exception {
+		List<Map<String, Object>> employeeList = null;
+		try {
+			connection = DBUtil.getConnection();
+			String[] fields = new String[] {"id","sequence","username","department_id","phone","email","state"};
+			employeeList = dao.query(condition, pagination, fields, ModelConstant.EMPLOYEE, connection);
+		} finally {
+			DBUtil.release(connection);
+		}
+		return employeeList;
 	}
 
 	@Override
-	public List<Map<String, Object>> queryPop(Map<String, Object> condition, Map<String, Integer> pagination) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Map<String, Object>> queryPop(Map<String, Object> condition, Map<String, Integer> pagination) throws Exception {
+		List<Map<String, Object>> employeeList = null;
+		try {
+			connection = DBUtil.getConnection();
+			String[] fields = new String[] {"id","sequence","username","department_id"};
+			employeeList = dao.query(condition, pagination, fields, ModelConstant.EMPLOYEE, connection);
+		} finally {
+			DBUtil.release(connection);
+		}
+		return employeeList;
+	}
+	
+	private int getMaxSequence(Connection connection) throws Exception {
+		int maxSequenct = 0;
+		List<Map<String, Object>> employeeList = dao.query(null, null, new String[] {"sequence"}, ModelConstant.EMPLOYEE, connection);
+		if (employeeList != null && employeeList.size() > 0) {
+			for (Map<String, Object> employee : employeeList) {
+				int sequence = Integer.valueOf(String.valueOf(employee.get("sequence")));
+				if (sequence > maxSequenct) {
+					maxSequenct = sequence;
+				}
+			}
+		}
+		return maxSequenct + 1;
 	}
 
 }
