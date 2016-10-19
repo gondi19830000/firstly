@@ -40,7 +40,14 @@ public abstract class JDBCTemplate {
 				int columnCount = metaData.getColumnCount();
 				for (int i=0; i<columnCount; i++) {
 					String columnName = metaData.getColumnName(i+1);
-					entitiy.put(columnName.toLowerCase(), resultSet.getObject(columnName));
+					Object colunmValue = resultSet.getObject(columnName);
+					if (colunmValue != null) {
+						if ("oracle.sql.TIMESTAMP".equals(colunmValue.getClass().getName())) {
+							System.out.println(((oracle.sql.TIMESTAMP) colunmValue).timestampValue().getClass().getName());
+							colunmValue = ((oracle.sql.TIMESTAMP) colunmValue).timestampValue();
+						}
+					}
+					entitiy.put(columnName.toLowerCase(), colunmValue);
 				}
 				entitiyList.add(entitiy);
 			}

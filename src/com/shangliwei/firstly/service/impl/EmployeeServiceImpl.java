@@ -8,12 +8,12 @@ import java.util.Map;
 import com.shangliwei.firstly.constant.ModelConstant;
 import com.shangliwei.firstly.dao.IDao;
 import com.shangliwei.firstly.dao.impl.DaoImpl;
-import com.shangliwei.firstly.service.IEmployeeService;
+import com.shangliwei.firstly.service.IService;
 import com.shangliwei.firstly.util.DBUtil;
 import com.shangliwei.firstly.util.DateTimeUtil;
 import com.shangliwei.firstly.util.SequenceUtil;
 
-public class EmployeeServiceImpl implements IEmployeeService {
+public class EmployeeServiceImpl implements IService {
 	
 	private Connection connection = null;
 	private IDao dao = new DaoImpl();
@@ -44,7 +44,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
 		try {
 			connection = DBUtil.getConnection();
 			Map<String, Object> employee = new HashMap<>();
-			employee.put("id", SequenceUtil.getUUID());
+			employee.put("id", form.get("id"));
 			employee.put("username", form.get("username"));
 			employee.put("password", form.get("password"));
 			employee.put("department_id", form.get("department_id"));

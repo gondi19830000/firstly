@@ -1,7 +1,5 @@
 package com.shangliwei.firstly.service;
 
-import static org.junit.Assert.*;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,7 +9,7 @@ import com.shangliwei.firstly.service.impl.EmployeeServiceImpl;
 
 public class EmployeeServiceImplTest {
 
-	IEmployeeService service = new EmployeeServiceImpl();
+	private IService service = new EmployeeServiceImpl();
 	
 	@Test
 	public void testAdd() throws Exception {
@@ -25,13 +23,15 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void testUpdate() {
-		fail("Not yet implemented");
+	public void testUpdate() throws Exception {
+		Map<String, Object> form = service.queryDetail("5dd058bb56b54e8d8eceee800394dd52");
+		form.put("state", "02");
+		service.update(form, "admin");
 	}
 
 	@Test
-	public void testDelete() {
-		fail("Not yet implemented");
+	public void testDelete() throws Exception {
+		service.delete("0c2dba9e71e145e1b43e2e2a3b8853e5", "admin");
 	}
 
 	@Test
