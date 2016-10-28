@@ -18,6 +18,7 @@ public abstract class JDBCTemplate {
 			for (int i=0; i<parameters.size(); i++) {
 				preparedStatement.setObject(i+1, parameters.get(i));
 			}
+			Log.write("Execute SQL: " + sql, Log.MODE_DEBUG);
 			preparedStatement.executeUpdate();
 		} finally {
 			DBUtil.relase(preparedStatement);
@@ -30,9 +31,12 @@ public abstract class JDBCTemplate {
 		ResultSet resultSet = null;
 		try {
 			preparedStatement = connection.prepareStatement(sql);
-			for (int i=0; i<parameters.size(); i++) {
-				preparedStatement.setObject(i+1, parameters.get(i));
+			if (parameters != null) {
+				for (int i=0; i<parameters.size(); i++) {
+					preparedStatement.setObject(i+1, parameters.get(i));
+				}
 			}
+			Log.write("Execute SQL: " + sql, Log.MODE_DEBUG);
 			resultSet = preparedStatement.executeQuery();
 			while (resultSet.next()) {
 				Map<String, Object> entitiy = new HashMap<>();
@@ -40,13 +44,7 @@ public abstract class JDBCTemplate {
 				int columnCount = metaData.getColumnCount();
 				for (int i=0; i<columnCount; i++) {
 					String columnName = metaData.getColumnName(i+1);
-					Object colunmValue = resultSet.getObject(columnName);
-					if (colunmValue != null) {
-						if ("oracle.sql.TIMESTAMP".equals(colunmValue.getClass().getName())) {
-							System.out.println(((oracle.sql.TIMESTAMP) colunmValue).timestampValue().getClass().getName());
-							colunmValue = ((oracle.sql.TIMESTAMP) colunmValue).timestampValue();
-						}
-					}
+					Object colunmValue = this.columnValueOracleToJavaType(resultSet.getObject(columnName));
 					entitiy.put(columnName.toLowerCase(), colunmValue);
 				}
 				entitiyList.add(entitiy);
@@ -56,5 +54,18 @@ public abstract class JDBCTemplate {
 			DBUtil.relase(resultSet);
 		}
 		return entitiyList;
+	}
+	
+	private Object columnValueOracleToJavaType(Object columnValue) throws Exception {
+		if (columnValue != null) {
+			if ("oracle.sql.TIMESTAMP".equals(columnValue.getClass().getName())) {
+				Log.write("Column type convert: oracle.sql.TIMESTAMP to java.sql.Timestamp", Log.MODE_DEBUG);
+				columnValue = ((oracle.sql.TIMESTAMP) columnValue).timestampValue();
+			} else if ("java.math.BigDecimal".equals(columnValue.getClass().getName())) {
+				Log.write("Column type convert: java.math.BigDecimal to int", Log.MODE_DEBUG);
+				columnValue = ((java.math.BigDecimal) columnValue).intValue();
+			}
+		}
+		return columnValue;
 	}
 }

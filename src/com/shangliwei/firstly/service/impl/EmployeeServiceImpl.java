@@ -111,14 +111,10 @@ public class EmployeeServiceImpl implements IService {
 	
 	private int getMaxSequence(Connection connection) throws Exception {
 		int maxSequenct = 0;
-		List<Map<String, Object>> employeeList = dao.query(null, null, new String[] {"sequence"}, ModelConstant.EMPLOYEE, connection);
-		if (employeeList != null && employeeList.size() > 0) {
-			for (Map<String, Object> employee : employeeList) {
-				int sequence = Integer.valueOf(String.valueOf(employee.get("sequence")));
-				if (sequence > maxSequenct) {
-					maxSequenct = sequence;
-				}
-			}
+		String sql = "SELECT MAX(SEQUENCE) max_sequence FROM " + ModelConstant.EMPLOYEE;
+		List<Map<String, Object>> result = new DaoImpl().executeQuery(sql, null, connection);
+		if (result != null) {
+			maxSequenct = (int) result.get(0).get("max_sequence");
 		}
 		return maxSequenct + 1;
 	}

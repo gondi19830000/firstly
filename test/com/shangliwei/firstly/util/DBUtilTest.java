@@ -8,5 +8,10 @@ public class DBUtilTest {
 	public void testGetConnection() throws Exception {
 		System.out.println(DBUtil.getConnection());
 	}
+	
+	@Test
+	public void testReleaseConnection() throws Exception {
+		DBUtil.release(DBUtil.getConnection());
+	}
 
 }

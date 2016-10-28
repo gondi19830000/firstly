@@ -36,7 +36,7 @@ public class EmployeeServiceImplTest {
 
 	@Test
 	public void testQueryDetail() throws Exception {
-		System.out.println(service.queryDetail("5dd058bb56b54e8d8eceee800394dd52"));
+		System.out.println(service.queryDetail("11165853ca46440bbb7ddf8584e30376"));
 	}
 
 	@Test
